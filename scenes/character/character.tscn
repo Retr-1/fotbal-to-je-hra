@@ -1,0 +1,140 @@
+[gd_scene format=3 uid="uid://bb1ux14h6ur6n"]
+
+[ext_resource type="Script" uid="uid://bt5y4utiwys52" path="res://scenes/character/character.gd" id="1_fgi2k"]
+[ext_resource type="PackedScene" uid="uid://b62tv0pg1xtuo" path="res://assets/models/X Bot.fbx" id="1_mutn8"]
+[ext_resource type="Animation" uid="uid://cmn5dmindsu3f" path="res://assets/animations/idle.anim" id="2_fgi2k"]
+[ext_resource type="Animation" uid="uid://b84vue6rcfb55" path="res://assets/animations/running.anim" id="3_f8hpl"]
+[ext_resource type="PackedScene" uid="uid://d4kn6e1nptgxi" path="res://assets/models/ring.glb" id="5_f8hpl"]
+[ext_resource type="PackedScene" uid="uid://c0rnlag2el1gq" path="res://scenes/arrow/arrow.tscn" id="6_7ex5l"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_7ex5l"]
+_data = {
+&"idle": ExtResource("2_fgi2k"),
+&"running": ExtResource("3_f8hpl")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mutn8"]
+animation = &"FotbalLibrary/idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fgi2k"]
+animation = &"FotbalLibrary/running"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_f8hpl"]
+min_space = 0.0
+blend_point_0/node = SubResource("AnimationNodeAnimation_mutn8")
+blend_point_0/pos = 0.0
+blend_point_0/name = &"FotbalLibrary_idle"
+blend_point_1/node = SubResource("AnimationNodeAnimation_fgi2k")
+blend_point_1/pos = 1.0
+blend_point_1/name = &"FotbalLibrary_running"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7ex5l"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_w2l1i"]
+states/locomotion/node = SubResource("AnimationNodeBlendSpace1D_f8hpl")
+states/locomotion/position = Vector2(496, 100)
+transitions = ["Start", "locomotion", SubResource("AnimationNodeStateMachineTransition_7ex5l")]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_w2l1i"]
+radius = 0.33642578
+height = 1.8640747
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ea6by"]
+radius = 0.92871094
+
+[node name="Character" type="CharacterBody3D" unique_id=1612456397]
+script = ExtResource("1_fgi2k")
+
+[node name="X Bot" parent="." unique_id=1258596081 instance=ExtResource("1_mutn8")]
+
+[node name="Skeleton3D" parent="X Bot" index="0" unique_id=2048691530]
+bones/0/position = Vector3(-0.0024026134, 1.0104679, 0.018529337)
+bones/0/rotation = Quaternion(-0.015012568, -0.025265539, -0.0832992, 0.9960911)
+bones/1/rotation = Quaternion(-0.06884272, -0.013948513, 0.08960865, 0.9934971)
+bones/2/rotation = Quaternion(-0.053626746, -0.016022742, 0.015960805, 0.99830496)
+bones/3/rotation = Quaternion(-0.04069273, -0.015377369, 0.016375024, 0.99891925)
+bones/4/rotation = Quaternion(0.054087985, 0.011024325, -0.054118097, 0.9970077)
+bones/5/rotation = Quaternion(-0.026921222, -0.0045247287, 0.005970334, 0.99960953)
+bones/7/rotation = Quaternion(-0.5115009, 0.54682404, -0.56193835, -0.35153326)
+bones/8/rotation = Quaternion(0.5366909, -0.17044304, 0.035297435, 0.8256308)
+bones/9/rotation = Quaternion(-1.8571676e-08, -8.654236e-08, -0.24170043, 0.970351)
+bones/10/rotation = Quaternion(-0.020397712, -0.14148779, -0.013010537, 0.9896444)
+bones/11/rotation = Quaternion(0.12378159, 0.061519206, -0.16079575, 0.97726065)
+bones/12/rotation = Quaternion(-0.0653906, 0.034607552, 0.19672193, 0.977664)
+bones/13/rotation = Quaternion(0.021404762, -0.0029978468, -0.047553435, 0.9986349)
+bones/15/rotation = Quaternion(0.19805422, -0.0018123782, 0.033055115, 0.9796319)
+bones/16/rotation = Quaternion(0.097147, 1.1784509e-07, 0.011839656, 0.9951997)
+bones/17/rotation = Quaternion(0.15391004, -2.772519e-07, 0.018757649, 0.9879069)
+bones/19/rotation = Quaternion(0.12839884, 0.0006959616, 0.010258471, 0.9916694)
+bones/20/rotation = Quaternion(0.1339223, -8.4444764e-08, 0.016321585, 0.9908575)
+bones/21/rotation = Quaternion(0.24238423, 0.030772492, 0.037382483, 0.9689714)
+bones/23/rotation = Quaternion(0.185855, 0.00022499448, 0.021461206, 0.98234284)
+bones/24/rotation = Quaternion(0.10824087, -1.3238788e-07, 0.013191815, 0.99403715)
+bones/25/rotation = Quaternion(0.17742218, 0.102072194, 0.04065782, 0.97798246)
+bones/27/rotation = Quaternion(0.14301494, -0.00029076473, 0.01944046, 0.9895296)
+bones/28/rotation = Quaternion(0.13800661, -2.6193446e-08, 0.016819447, 0.9902885)
+bones/29/rotation = Quaternion(0.20464301, -5.38421e-09, 0.024940588, 0.97851896)
+bones/31/rotation = Quaternion(0.53069085, 0.53493434, -0.5451688, 0.3674281)
+bones/32/rotation = Quaternion(0.63139075, 0.07758942, -0.12770988, 0.7609309)
+bones/33/rotation = Quaternion(1.6047343e-08, -1.2723717e-08, 0.18518254, 0.98270416)
+bones/34/rotation = Quaternion(-0.0039327843, 0.10853238, 0.07941023, 0.9909084)
+bones/35/rotation = Quaternion(0.12482774, -0.07332803, 0.13990489, 0.9795242)
+bones/36/rotation = Quaternion(-0.010308213, 0.002615357, -0.08174623, 0.9965965)
+bones/37/rotation = Quaternion(-0.027354952, -0.09062524, -0.0031288618, 0.9955044)
+bones/39/rotation = Quaternion(0.10912195, -0.0013978785, -0.00025560407, 0.9940274)
+bones/40/rotation = Quaternion(0.13186748, -7.430772e-08, -0.015913913, 0.99113965)
+bones/41/rotation = Quaternion(0.16649404, -2.9713357e-07, -0.020092508, 0.98583776)
+bones/43/rotation = Quaternion(0.055284448, -0.000336348, -0.00055150985, 0.9984705)
+bones/44/rotation = Quaternion(0.14216432, -1.4566794e-07, -0.017156536, 0.98969436)
+bones/45/rotation = Quaternion(0.17302223, -1.8839168e-07, -0.020880431, 0.9846966)
+bones/47/rotation = Quaternion(0.11057692, -0.0010927329, -0.0034180444, 0.9938612)
+bones/48/rotation = Quaternion(0.15228136, -3.68301e-07, -0.018377356, 0.9881664)
+bones/49/rotation = Quaternion(0.23188858, -4.0069526e-07, -0.027984316, 0.97233975)
+bones/51/rotation = Quaternion(0.12314345, 0.0045271134, -0.050052498, 0.99111557)
+bones/52/rotation = Quaternion(0.14483246, 0.0050457222, 0.018070297, 0.9892783)
+bones/53/rotation = Quaternion(0.12755881, -1.1555702e-07, -0.015393887, 0.9917116)
+bones/55/rotation = Quaternion(-0.07008294, 0.05268495, 0.99226654, -0.08786327)
+bones/56/rotation = Quaternion(-0.19893022, 0.05376545, 0.0054746964, 0.9785224)
+bones/57/rotation = Quaternion(0.5394661, -0.030677145, -0.0045494386, 0.8414361)
+bones/58/rotation = Quaternion(0.34028155, -2.9262122e-08, 7.2346936e-08, 0.9403236)
+bones/60/rotation = Quaternion(0.054292325, 0.13917977, 0.9828027, -0.10853737)
+bones/61/rotation = Quaternion(-0.31980887, -0.06635015, 0.0035129879, 0.94514954)
+bones/62/rotation = Quaternion(0.5777167, -0.014186361, -0.016772874, 0.8159417)
+bones/63/rotation = Quaternion(0.32990155, 1.4781076e-06, 4.879066e-07, 0.9440154)
+
+[node name="AnimationPlayer" parent="X Bot" index="1" unique_id=1522302563]
+libraries/FotbalLibrary = SubResource("AnimationLibrary_7ex5l")
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=2056961677]
+root_node = NodePath("../X Bot")
+tree_root = SubResource("AnimationNodeStateMachine_w2l1i")
+anim_player = NodePath("../X Bot/AnimationPlayer")
+parameters/locomotion/blend_position = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1847167098]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89768314, 0)
+shape = SubResource("CapsuleShape3D_w2l1i")
+
+[node name="HoverArea" type="Area3D" parent="." unique_id=38648715]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HoverArea" unique_id=1504285112]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.882066, 0)
+shape = SubResource("CapsuleShape3D_ea6by")
+
+[node name="UIElements" type="Node3D" parent="." unique_id=922541307]
+transform = Transform3D(-0.9998529, 0, 0.017151015, 0, 1, 0, -0.017151015, 0, -0.9998529, 0, 0.42782927, 0)
+
+[node name="ring" parent="UIElements" unique_id=1381456268 instance=ExtResource("5_f8hpl")]
+visible = false
+
+[node name="Circle_004" parent="UIElements/ring" index="0" unique_id=386532507]
+cast_shadow = 0
+
+[node name="Arrow" parent="UIElements" unique_id=2076932268 instance=ExtResource("6_7ex5l")]
+transform = Transform3D(1.0000002, 0, -1.8626451e-09, 0, 1, 0, 1.8626451e-09, 0, 1.0000002, 0.0003016619, 0, -0.5243919)
+
+[editable path="X Bot"]
+[editable path="UIElements/ring"]

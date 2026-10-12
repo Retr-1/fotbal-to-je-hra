@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://c0rnlag2el1gq"]
+
+[ext_resource type="PackedScene" uid="uid://dopxb3fgbfles" path="res://assets/models/arrow_head.glb" id="1_8e2im"]
+[ext_resource type="Script" uid="uid://br5gx1rgq5rpb" path="res://scenes/arrow/arrow.gd" id="1_hp5o0"]
+[ext_resource type="PackedScene" uid="uid://c6vhckv5yfe3i" path="res://assets/models/arrow_shaft.glb" id="2_hp5o0"]
+
+[node name="Arrow" type="Node3D" unique_id=2076932268]
+script = ExtResource("1_hp5o0")
+
+[node name="arrow_head" parent="." unique_id=2102647132 instance=ExtResource("1_8e2im")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.9785761)
+
+[node name="Plane_002" parent="arrow_head" index="0" unique_id=1550727263]
+cast_shadow = 0
+
+[node name="arrow_shaft" parent="." unique_id=1561065763 instance=ExtResource("2_hp5o0")]
+
+[node name="Plane" parent="arrow_shaft" index="0" unique_id=532968507]
+cast_shadow = 0
+
+[node name="Plane_001" parent="arrow_shaft" index="1" unique_id=22238093]
+cast_shadow = 0
+
+[editable path="arrow_head"]
+[editable path="arrow_shaft"]
