@@ -65,15 +65,26 @@ func update_interaction() -> void:
 			elif new_character != active_character:
 				active_character.set_hovered(false)
 				active_character = new_character
+				active_character.set_hovered(true)
 			elif Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 				interaction_state = InteractionState.DRAGGING
-				active_character.set_hovered(false)
+				active_character.arrow.visible = true
+				active_character.hover_ring.visible = false
+			else:
+				active_character.update_auxiliary_elements()
+
 		
 		InteractionState.DRAGGING:
 			var intersect: Variant = raycast_to_find_floor()
-			if intersect is Vector3:
-				debug_sphere(intersect)
-				active_character.set_arrow_endpos(intersect)
+			if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+				interaction_state = InteractionState.NOTHING
+				active_character.move_to(intersect)
+				active_character.set_hovered(false)
+				active_character = null
+			else:
+				if intersect is Vector3:
+					debug_sphere(intersect)
+					active_character.set_arrow_endpos(intersect)
 				
 		
 func debug_sphere(

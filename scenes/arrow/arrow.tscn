@@ -1,8 +1,217 @@
-[gd_scene format=3 uid="uid://c0rnlag2el1gq"]
+[gd_scene format=4 uid="uid://c0rnlag2el1gq"]
 
 [ext_resource type="PackedScene" uid="uid://dopxb3fgbfles" path="res://assets/models/arrow_head.glb" id="1_8e2im"]
 [ext_resource type="Script" uid="uid://br5gx1rgq5rpb" path="res://scenes/arrow/arrow.gd" id="1_hp5o0"]
 [ext_resource type="PackedScene" uid="uid://c6vhckv5yfe3i" path="res://assets/models/arrow_shaft.glb" id="2_hp5o0"]
+
+[sub_resource type="Shader" id="Shader_yigju"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.7.2.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_burley, specular_schlick_ggx;
+
+uniform vec3 clip_point = vec3(0,0,0);
+uniform vec3 clip_normal = vec3(0,1,0);
+
+varying vec3 world_pos;
+
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color, filter_linear_mipmap, repeat_enable;
+uniform ivec2 albedo_texture_size;
+uniform float point_size : hint_range(0.1, 128.0, 0.1);
+
+uniform float roughness : hint_range(0.0, 1.0);
+uniform sampler2D texture_metallic : hint_default_white, filter_linear_mipmap, repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r, filter_linear_mipmap, repeat_enable;
+
+uniform float specular : hint_range(0.0, 1.0, 0.01);
+uniform float metallic : hint_range(0.0, 1.0, 0.01);
+
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+void vertex() {
+	UV = UV * uv1_scale.xy + uv1_offset.xy;
+	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1)).xyz;
+}
+
+void fragment() {
+	float side = dot(
+		world_pos - clip_point,
+		clip_normal
+	);
+	
+	if (side < 0.0) {
+		discard;
+	}
+	vec2 base_uv = UV;
+
+	vec4 albedo_tex = texture(texture_albedo, base_uv);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+
+	float metallic_tex = dot(texture(texture_metallic, base_uv), metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	SPECULAR = specular;
+
+	vec4 roughness_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
+	float roughness_tex = dot(texture(texture_roughness, base_uv), roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bjwy3"]
+resource_name = "Material.002"
+render_priority = 0
+shader = SubResource("Shader_yigju")
+shader_parameter/clip_point = Vector3(0, 0, 0)
+shader_parameter/clip_normal = Vector3(0, 1, 0)
+shader_parameter/albedo = Color(0.37487045, 0.6170384, 0.90633965, 1)
+shader_parameter/albedo_texture_size = Vector2i(0, 0)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 0.5
+shader_parameter/metallic_texture_channel = Vector4(1, 0, 0, 0)
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+
+[sub_resource type="Shader" id="Shader_bjwy3"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.7.2.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_burley, specular_schlick_ggx, depth_prepass_alpha;
+
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color, filter_linear_mipmap, repeat_enable;
+uniform ivec2 albedo_texture_size;
+uniform float point_size : hint_range(0.1, 128.0, 0.1);
+
+uniform float roughness : hint_range(0.0, 1.0);
+uniform sampler2D texture_metallic : hint_default_white, filter_linear_mipmap, repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r, filter_linear_mipmap, repeat_enable;
+
+uniform float specular : hint_range(0.0, 1.0, 0.01);
+uniform float metallic : hint_range(0.0, 1.0, 0.01);
+
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+uniform vec3 clip_point = vec3(0,0,0);
+uniform vec3 clip_normal = vec3(0,1,0);
+
+varying vec3 world_pos;
+
+
+void vertex() {
+	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1)).xyz;
+	UV = UV * uv1_scale.xy + uv1_offset.xy;
+}
+
+void fragment() {
+	float side = dot(
+		world_pos - clip_point,
+		clip_normal
+	);
+	if (side < 0.0) {
+		discard;
+	}
+	vec2 base_uv = UV;
+
+	vec4 albedo_tex = texture(texture_albedo, base_uv);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+
+	float metallic_tex = dot(texture(texture_metallic, base_uv), metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	SPECULAR = specular;
+
+	vec4 roughness_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
+	float roughness_tex = dot(texture(texture_roughness, base_uv), roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+	ALPHA *= albedo.a * albedo_tex.a;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8w350"]
+resource_name = "Material.001"
+render_priority = 0
+shader = SubResource("Shader_bjwy3")
+shader_parameter/albedo = Color(0.5574132, 0.90633965, 0.8513177, 0.3768844)
+shader_parameter/albedo_texture_size = Vector2i(0, 0)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 0.5
+shader_parameter/metallic_texture_channel = Vector4(1, 0, 0, 0)
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/clip_point = Vector3(0, 0, 0)
+shader_parameter/clip_normal = Vector3(0, 1, 0)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_agndw"]
+_surfaces = [{
+"aabb": AABB(-1.0267829, -0.030000001, -3.5619533, 2.0535657, 0.060000002, 1.5781996),
+"format": 34896613377,
+"index_count": 318,
+"index_data": PackedByteArray("AQAhAAIAAwAEAAEABAAiAAEAAQAiACEABAAHACIAAwABACMAIwABAAIABQADACMABwAkACIABwAJACQAIgAlACEAIgAkACUABQAjABQABgAFABQAFAAjACYAIwACACYABgAUACcACAAGACcAFAAmABwAJwAUABwACAAnABYACgAIABYAJwAcABsAFgAnABsACgAWACgADAAKACgAFgAbAA8AKAAWAA8ADAAoAAAADgAMAAAAKAAPACkAAAAoACkADgAAACoADQAOACoAAAApABgAKgAAABgADQAqACsACwANACsAKgAYABAAKwAqABAACwArABUACQALABUACQAVACQAFQArACwAKwAQACwAJAAVABcAFQAsABcAJAAXACUALAAQAC0AFwAsABkALAAtABkAJQAXAC4AFwAZAC4AJQAuAC8AIQAlAC8ALwAuABoAGQAtACAAIQAvADAALgAZADEAGQAgADEALgAxABoAAgAhADAALwAaADIAMQAyABoAMAAvADIAMwAxACAALQAzACAAMwAyADEAMAAyADQAAgAwABIAEgAwADQAJgACABIAMgA1ADQAEgA0ADUAJgASAB0AHQASADUAHAAmAB0AHQA1ABMAHAAdADYANgAdABMAGwAcADYANQA3ABMAMgA3ADUANgATADcANwAyADMAGwA2AB4AHgA2ADcADwAbAB4AHgA3AB8ADwAeADgAOAAeAB8AKQAPADgANwA5AB8AOAAfADkANwAzADkAKQA4ABEAEQA4ADkAGAApABEAOQAzADoAEQA5ADoAOwA6ADMAOwARADoAGAARADsALQA7ADMAEAAYADsAEAA7AC0A"),
+"lods": [0.10747518, PackedByteArray("FAABAAIABgAFABQABQADABQAAwABABQAAwAEAAEABAAHAAEACAAGABQABwAVAAEABwAJABUACQALABUACwANABUACAAUABYACgAIABYAAQAVABcAAQAXAAIADQAAABUACgAWAAAADQAOAAAADAAKAAAADgAMAAAAFQAQABcAFQAAABAAAAAYABAAAAAWAA8AAAAPABgAEAAYABEAGAAPABEAFwAQABkAEAARABkAFwAZABIAAgAXABIAEgAZABoAFgAbAA8AFgAUABsAFAACABwAFAAcABsAHAACAB0AAgASAB0AGwAcAB0ADwAbAB4AGwAdAB4ADwAeABEAHQASABMAHgAdABMAEgAaABMAEQAeAB8AHgATAB8AEQAfACAAEwAgAB8AEwAaACAAGQARACAAGQAgABoA"), 0.46785098, PackedByteArray("AQACAA8AAwAEAAEABQADAAEABgAFAAEABAAHAAEACAAGAAEABwAAAAEACAABAAAABwAJAAAACgAIAAAACQALAAAADAAKAAAACwANAAAADgAMAAAADQAOAAAAAQAAAAIAAAABAA8AAAAQAAIAAAAPABAAAgAQABEAEAAPABEADwACABIAAgARABIADwASABEAEQASABMAEgARABMA"), 0.9310479, PackedByteArray("AAABAAIAAQAAAAIAAwAEAAEABQADAAEABgAFAAEABAAHAAEACAAGAAEABwAAAAEACAABAAAABwAJAAAACgAIAAAACQALAAAADAAKAAAACwANAAAADgAMAAAADQAOAAAA")],
+"name": "Material.002",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 60,
+"vertex_data": PackedByteArray("Iwb/P1r7AABwAP+/Xf8AAP9//7+mAAAAAlbY7oT+AACbVf+/Xf8AAI1W//9c/QAAGVfY7jP8AAB2Vf9/rf8AAIBX/79a+wAAm1X/P13/AAClV/9/C/sAAAJWJRGE/gAAgFf/P1r7AACNVgAAXP0AABlXJhEz/AAA/3//vxQJAAD/fyYRTAcAAGv5/38L+wAAjv//v13/AABpqNjurf4AAEkD//9c/QAApAElEYT+AAAjBv+/WvsAAP9/JRFuAgAA/3//PxQJAAC1/AAAXP0AAGmoJRGt/gAA/3/Y7kwHAAD/f///3QQAAFr+2O6E/gAAEPvY7jP8AADgqNjuC/wAAOCoJhEL/AAA/3//fwAAAAAAAP9/rf8AAKQB2O6E/gAAcAD/P13/AAD/f/8/pgAAAP9/2O5uAgAA7gTY7jP8AACTBv9/C/sAAP9//3+7CQAA7gQmETP8AABJAwAAXP0AAP9/AADdBAAAEPsmETP8AABa/iURhP4AAI7//z9d/wAA////f63/AAClqAAAXP0AAD2o/z+k/wAADKn/PxT7AAAtqP9///8AAD2o/7+k/wAAtfz//1z9AAClqP//XP0AANv5/79a+wAADKn/vxT7AAAcqf9/ufoAANv5/z9a+wAA")
+}, {
+"aabb": AABB(-1.0004002, 0, -3.5319533, 2.0008004, 1e-05, 1.5319533),
+"format": 34896613377,
+"index_count": 3,
+"index_data": PackedByteArray("AAABAAIA"),
+"name": "Material.001",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 3,
+"vertex_data": PackedByteArray("//8AAP//AAD/fwAAAAAAAAAAAAD//wAA")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_lny6r"]
+resource_name = "arrow_head_Plane_004"
+_surfaces = [{
+"aabb": AABB(-1.0267829, -0.030000001, -3.5619533, 2.0535657, 0.060000002, 1.5781996),
+"attribute_data": PackedByteArray("AAD/fwAA//9VVQAAAAAAAILjAACC41UV//8AAP///3+C46oqguP/P4LjVFWC46pqguP/f4LjVJWC46mq/////4Lj/7+C41TVguOp6oLj//9VVf//VVWpqqqq//9VVapqqqpUlWzHqeqqqgAAAABU1VVVVNWqqqnqVVX/vwAAqaqqqv+/bMf/v1VV/38AAP8/bMeqamzH/z+qqlRVVVX/P////z///6mq//9U1VVVVRUAAFUVqqpVFWzHVRVsxwAAbMeqKqqqqipVVaoqAACqKqqq/z9sx1RVVVVUVQAAVFVsx/9/qqqqagAAqmqqqv9/bMdUlVVVVJUAAFSVbMeqqmzHVNWqqqmqAAD/v6qqVNVsx///VVWp6gAAqer//1UV//+qKv//VFX//6pq//9Ulf///7///6nq"),
+"format": 34896613399,
+"index_count": 318,
+"index_data": PackedByteArray("AwArAAIAAwAsACsAAgArAC0AAgAtABoAGgAtAC4AGgAuAC8ALQAwAC4AMAAvAC4AKwAxAC0ALQAxADAALAAyACsAKwAyADEALAAzADIAMwAnADIAMwAjACcAMgA0ADEAMgAnADQAMQA0ACUAMQAlADAANAA1ACUANQAwACUAJwAmADQANAAmADUAIwA2ACcAJwA2ACYAIwA3ADYAJgAkADUAOAAwADUAOAA1ACQAJgA5ACQANgA5ACYAOQA4ACQANwAXADYANgAXADkANwA6ABcAFwA7ADkAOQA7ADgAOgAiABcAFwAiADsAOgAAACIAOwA8ADgAAAA9ACIAIgAYADsAOwAYADwAIgA9ABgAAAA+AD0APwA4ADwAGAA/ADwAQAA4AD8AQAAwADgAMABAAC8ALwBAABkAQAA/ACEAGABBAD8AQQAhAD8APQBBABgAIABAACEAQQAgACEAPQAVAEEAFQAgAEEAPgAVAD0APgAfABUAHwAeABUAFQAeACAAHwBCAB4AIABDAEAAHgBDACAAQwAZAEAAQgAcAB4AHgAcAEMAQgAbABwAQwAdABkAHAAdAEMAHQBEABkAHQAWAEQAHABFAB0ARQAWAB0AGwBFABwARQAUABYAGwBGAEUARgAUAEUARgABABQABABHAAYABAAFAEcABQBIAEcABQAIAEgACAAoAEgACAAJACgACQBJACgACQAKAEkACgBKAEkACgALAEoACwAHAEoACwAMAAcADABLAAcADAANAEsADQApAEsADQAOACkADgBMACkADgAQAEwAEAAqAEwAEAARACoAEQBNACoAEQASAE0AEgAPAE0AEgATAA8A"),
+"lods": [0.10747518, PackedByteArray("GwABABQAGwAUABwAHAAUAB0AFAAWAB0AGwAcAB4AHgAcAB0AHwAbAB4AHQAWABkAHwAeABUAHgAdACAAIAAdABkAFQAeACAAAAAfABUAIAAZACEAAAAVACIAFQAgABgAGAAgACEAIgAVABgAAAAiABcAFwAiABgAIwAAABcAGQAkACEAGAAhACQAGQAlACQAGgAlABkAJgAYACQAJgAkACUAFwAYACYAGgAmACUAIwAXACcAJwAXACYAJwAmABoAAwAjACcAAgAnABoAAwAnAAIABAAFAAYABQAoAAYABQAIACgACAAJACgACQAKACgACgAHACgACgALAAcACwAMAAcADAANAAcADQApAAcADQAOACkADgAqACkADgAQACoAEAARACoAEQASACoAEgAPACoAEgATAA8A"), 0.46785098, PackedByteArray("AQAUABUAFQAUABYAAAABABUAAAAVABcAAAAXAAIAAwAAAAIAFwAVABgAFQAWABgAAgAXABgAGAAWABkAAgAYABoAGgAYABkABAAFAAYABQAHAAYABQAIAAcACAAJAAcACQAKAAcACgALAAcACwAMAAcADAANAAcADQAOAAcADgAPAAcADgAQAA8AEAARAA8AEQASAA8AEgATAA8A"), 0.9310479, PackedByteArray("AAABAAIAAwAAAAIABAAFAAYABQAHAAYABQAIAAcACAAJAAcACQAKAAcACgALAAcACwAMAAcADAANAAcADQAOAAcADgAPAAcADgAQAA8AEAARAA8AEQASAA8AEgATAA8A")],
+"material": SubResource("ShaderMaterial_bjwy3"),
+"name": "Material.002",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 78,
+"vertex_data": PackedByteArray("Iwb/P1r7hC9wAP+/Xf+sIf9//7+mAOoRcAD/v13/qyGbVf+/Xf8AAHZV/3+t/wAAcAD/v13/GQ4jBv8/WvvoG5tV/z9d/wAAAlYlEYT+AACNVgAAXP0AABlXJhEz/AAAgFf/P1r7AAClV/9/C/sAAIBX/79a+wAAcAD/v13/GQ4ZV9juM/wAAI1W//9c/QAAAlbY7oT+AACbVf+/Xf8AAP9//7+mAOoR/3//vxQJU2iO//+/Xf8UCv9/JhFMB/JPa/n/fwv7vStpqNjurf5w1o7//79d/xwKSQP//1z9pzb/f///3QQSOVr+2O6E/lYT/3/Y7kwH8k8jBv+/WvuELxD72O4z/Bcj4KjY7gv8zd3/f/8/FAlTaKQBJRGE/lYx4KgmEQv8bhdpqCURrf59DbX8AABc/ZAb/38lEW4CxySkASURhP6ODCMG/79a++gbSQP//1z95AP/f/9/AAAAAAAA/3+t/wAA////f63/AAAtqP9////Noj2o/7+k//PJPaj/P6T/KgaO//8/Xf8WCv9//z+mAOoRcAD/P13/rSFa/iURhP5PE6WoAABc/QEU/38AAN0EEjlJAwAAXP2qNgyp/z8U+3UZEPsmETP8EiPuBCYRM/z9NNv5/z9a+zUpHKn/f7n6////f/9/uwn+f5MG/38L+8MrDKn/vxT78hOlqP//XP0UJ9v5/79a+zgp7gTY7jP8+zS1/P//XP2XGz2o/7+k/yQG/3/Y7m4CxySkAdjuhP5SMQAA/3+t/wAAcAD/P13/GQ5JAwAAXP3kA+4EJhEz/FoJkwb/fwv7wyvuBNjuM/xaCaQB2O6E/o4MTk3BNyr+yTT9/wCAKf7INP9/45D/f/9/6F8EnS6QXzf/fxtv/38qWWi6//8Kof//0XD///9/////f9Hw6F8Enf9/9N7/f5bF/3/Tpv9/45D7/wKA8f8CgFypO5ELAPp//3///478mDVfqTeRWOQXPfb/BIAhpD2f8/8EgL+3rDJdmR+8vNYdtg0A/H+kRTRzLKkW9kbfceSGLNjgBQD7f43SF+6fSC4Qb3sIu////39DUP9/zq//f/9//v9/agCnSvEU3ToRodYCAP1/NUssfkEf4dvRxSLuCAD6f+JCW2ShjvH+Izyp5lBDJ1JCU0vv/v+oYP9/////fwAAE2CyzE6G18i7kD/TJNKoPCyfgqwTXbGO+f8DgDHzVzpDUP9/+eLn3/bEbvsyiJ4+/38AAGBBMwgYbnCt")
+}, {
+"aabb": AABB(-1.0004002, 0, -3.5319533, 2.0008004, 1e-05, 1.5319533),
+"attribute_data": PackedByteArray("AAD//wAA//8AAP//"),
+"format": 34896613399,
+"index_count": 3,
+"index_data": PackedByteArray("AAABAAIA"),
+"material": SubResource("ShaderMaterial_8w350"),
+"name": "Material.001",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 3,
+"vertex_data": PackedByteArray("//8AAP///7//fwAAAAD/vwAAAAD///+/AAD/fwAA/38AAP9/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_agndw")
 
 [node name="Arrow" type="Node3D" unique_id=2076932268]
 script = ExtResource("1_hp5o0")
@@ -10,15 +219,16 @@ script = ExtResource("1_hp5o0")
 [node name="arrow_head" parent="." unique_id=2102647132 instance=ExtResource("1_8e2im")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.9785761)
 
-[node name="Plane_002" parent="arrow_head" index="0" unique_id=1550727263]
+[node name="Plane_002" parent="arrow_head" index="0" unique_id=1289320256]
 cast_shadow = 0
+mesh = SubResource("ArrayMesh_lny6r")
 
 [node name="arrow_shaft" parent="." unique_id=1561065763 instance=ExtResource("2_hp5o0")]
 
-[node name="Plane" parent="arrow_shaft" index="0" unique_id=532968507]
+[node name="Plane" parent="arrow_shaft" index="0" unique_id=1586535336]
 cast_shadow = 0
 
-[node name="Plane_001" parent="arrow_shaft" index="1" unique_id=22238093]
+[node name="Plane_001" parent="arrow_shaft" index="1" unique_id=374752565]
 cast_shadow = 0
 
 [editable path="arrow_head"]
