@@ -6,8 +6,10 @@ class_name Character
 @onready var arrow : Arrow = $UIElements/Arrow
 @onready var ui_elements : Node3D = $UIElements
 const HORIZONTAL_SPEED := 2.0
+const HORIZONTAL_ACCELERATION := 5.0
 const GRAVITY_ACCELERATION := 2.0
 var pos_to_move_to: Vector2
+var is_running := false
 
 func move_to(pos: Vector3) -> void:
 	pos_to_move_to = Vector2(pos.x, pos.z)
@@ -39,27 +41,27 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:	
-	velocity.y -= GRAVITY_ACCELERATION * delta
 	var gamefield_pos := get_gamefield_pos()
+	var target_velocity: Vector2
+	var dir = (pos_to_move_to-gamefield_pos).normalized()
 	
-	if (pos_to_move_to-gamefield_pos).length_squared() > 0.025:
-		print(pos_to_move_to, gamefield_pos)
-		var dir = (pos_to_move_to-gamefield_pos).normalized()
-		var new_hor_speed: Vector2 = dir*HORIZONTAL_SPEED
-		velocity.x = new_hor_speed.x
-		velocity.z = new_hor_speed.y
-		
-		anim_tree.set('parameters/locomotion/blend_position', 1)
-		
+	if (pos_to_move_to-gamefield_pos).length_squared() > 0.5:
+		target_velocity = dir*HORIZONTAL_SPEED	
 		look_at(Vector3(pos_to_move_to.x, 0, pos_to_move_to.y), Vector3.UP)
-	else:
-		velocity.x = 0
-		velocity.z = 0
-		anim_tree.set('parameters/locomotion/blend_position', 0)
+	else:	
+		target_velocity = Vector2.ZERO
 		
+	var current_velocity := Vector2(velocity.x, velocity.z)
+	current_velocity = current_velocity.move_toward(
+		target_velocity,
+		HORIZONTAL_ACCELERATION * delta
+	)
 	
+	velocity.x = current_velocity.x
+	velocity.z = current_velocity.y
+	velocity.y -= GRAVITY_ACCELERATION * delta
 		
-		
+	anim_tree.set('parameters/locomotion/blend_position', velocity.length()/HORIZONTAL_SPEED)	
 	move_and_slide()
 	
 	
