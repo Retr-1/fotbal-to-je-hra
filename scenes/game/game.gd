@@ -54,6 +54,7 @@ func update_interaction() -> void:
 		InteractionState.NOTHING:
 			if new_character:
 				active_character = new_character
+				active_character.update_auxiliary_elements()
 				active_character.set_hovered(true)
 				interaction_state = InteractionState.HOVERING
 		
