@@ -68,7 +68,6 @@ func update_interaction() -> void:
 				active_character.set_ui_state(Character.UIState.SHOW_TARGET)
 			elif Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 				interaction_state = InteractionState.DRAGGING
-				active_character.set_ui_state(Character.UIState.SHOW_PLAN)
 
 		
 		InteractionState.DRAGGING:
@@ -82,7 +81,7 @@ func update_interaction() -> void:
 				if intersect is Vector3:
 					debug_sphere(intersect)
 					print(intersect)
-					active_character.plan_to(intersect)
+					active_character.move_to(intersect)
 				
 		
 func debug_sphere(
