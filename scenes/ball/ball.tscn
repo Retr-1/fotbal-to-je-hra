@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://btonnlk7fm7o5"]
+
+[ext_resource type="PackedScene" uid="uid://bjm24o01wrq3y" path="res://assets/models/ball.glb" id="1_oqv3d"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_w2l1i"]
+radius = 0.91159374
+
+[node name="Ball" type="RigidBody3D" unique_id=594476205]
+collision_layer = 8
+collision_mask = 28
+
+[node name="ball" parent="." unique_id=2067629378 instance=ExtResource("1_oqv3d")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1073779544]
+shape = SubResource("SphereShape3D_w2l1i")
+
+[editable path="ball"]

@@ -9,28 +9,45 @@ const HORIZONTAL_SPEED := 2.0
 const HORIZONTAL_ACCELERATION := 5.0
 const GRAVITY_ACCELERATION := 2.0
 var pos_to_move_to: Vector2
-var is_running := false
+var pos_plan: Vector2
+
+enum UIState {
+	HIDDEN,
+	SHOW_TARGET,
+	SHOW_PLAN
+}
+
+var current_ui_state := UIState.HIDDEN
 
 func move_to(pos: Vector3) -> void:
 	pos_to_move_to = Vector2(pos.x, pos.z)
 
-func set_hovered(visibility: bool) -> void:
-	ui_elements.visible = visibility
+func plan_to(pos: Vector3) -> void:
+	pos_plan = Vector2(pos.x, pos.z)
+	
+func set_ui_state(state: UIState) -> void:
+	current_ui_state = state
 
-func update_auxiliary_elements() -> void:
-	if velocity.is_zero_approx():
-		arrow.visible = false
-		hover_ring.visible = true
-	else:
-		arrow.visible = true
-		hover_ring.visible = false
-		set_arrow_endpos(Vector3(pos_to_move_to.x, 0, pos_to_move_to.y))
+func update_ui_elements() -> void:
+	match current_ui_state:
+		UIState.HIDDEN:
+			ui_elements.visible = false
+		UIState.SHOW_TARGET:
+			ui_elements.visible = true
+			if velocity.is_zero_approx():
+				arrow.visible = false
+				hover_ring.visible = true
+			else:
+				arrow.visible = true
+				hover_ring.visible = false
+				set_arrow_endpos(Vector3(pos_to_move_to.x, 0, pos_to_move_to.y))
+		UIState.SHOW_PLAN:
+			ui_elements.visible = true
+			arrow.visible = true
+			hover_ring.visible = false
+			set_arrow_endpos(Vector3(pos_plan.x, 0, pos_plan.y))
 
 func set_arrow_endpos(endpos: Vector3) -> void:
-	#var length := (global_position - endpos).length()
-	#arrow.set_length(length)
-	#ui_elements.look_at(Vector3(endpos.x, ui_elements.global_position.y, endpos.z), Vector3.UP)
-	
 	arrow.set_start_end_pos(ui_elements.global_position, Vector3(endpos.x, ui_elements.position.y, endpos.z), 0.1)
 	
 func get_gamefield_pos() -> Vector2:
@@ -64,4 +81,6 @@ func _physics_process(delta: float) -> void:
 	anim_tree.set('parameters/locomotion/blend_position', velocity.length()/HORIZONTAL_SPEED)	
 	move_and_slide()
 	
+func _process(delta: float) -> void:
+	update_ui_elements()
 	

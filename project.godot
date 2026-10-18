@@ -23,6 +23,9 @@ window/stretch/aspect="expand"
 [layer_names]
 
 3d_physics/layer_2="CharacterHover"
+3d_physics/layer_3="Character"
+3d_physics/layer_4="Ball"
+3d_physics/layer_5="Walls"
 
 [physics]
 

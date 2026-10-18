@@ -54,25 +54,21 @@ func update_interaction() -> void:
 		InteractionState.NOTHING:
 			if new_character:
 				active_character = new_character
-				active_character.update_auxiliary_elements()
-				active_character.set_hovered(true)
+				active_character.set_ui_state(Character.UIState.SHOW_TARGET)
 				interaction_state = InteractionState.HOVERING
 		
 		InteractionState.HOVERING:
 			if new_character == null:
-				active_character.set_hovered(false)
+				active_character.set_ui_state(Character.UIState.HIDDEN)
 				active_character = null
 				interaction_state = InteractionState.NOTHING
 			elif new_character != active_character:
-				active_character.set_hovered(false)
+				active_character.set_ui_state(Character.UIState.HIDDEN)
 				active_character = new_character
-				active_character.set_hovered(true)
+				active_character.set_ui_state(Character.UIState.SHOW_TARGET)
 			elif Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 				interaction_state = InteractionState.DRAGGING
-				active_character.arrow.visible = true
-				active_character.hover_ring.visible = false
-			else:
-				active_character.update_auxiliary_elements()
+				active_character.set_ui_state(Character.UIState.SHOW_PLAN)
 
 		
 		InteractionState.DRAGGING:
@@ -80,12 +76,13 @@ func update_interaction() -> void:
 			if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 				interaction_state = InteractionState.NOTHING
 				active_character.move_to(intersect)
-				active_character.set_hovered(false)
+				active_character.set_ui_state(Character.UIState.HIDDEN)
 				active_character = null
 			else:
 				if intersect is Vector3:
 					debug_sphere(intersect)
-					active_character.set_arrow_endpos(intersect)
+					print(intersect)
+					active_character.plan_to(intersect)
 				
 		
 func debug_sphere(
@@ -109,17 +106,6 @@ func debug_sphere(
 	if is_instance_valid(instance):
 		instance.queue_free()
 	
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
-				pass
-			else:
-				pass
-				
-	elif event is InputEventMouseMotion and is_dragging:
-#		Update the arrow
-		pass
 
 func _physics_process(delta: float) -> void:
 	update_interaction()
